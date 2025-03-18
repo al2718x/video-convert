@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -f "$1" ]; then
+	PALETTE=/tmp/palette.png
+	OUT="${1%.*}"
+	ffmpeg -y -i "${1}" -vf palettegen "${PALETTE}" | zenity --progress --text="Preparing Palette..." --pulsate --auto-close --auto-kill
+	ffmpeg -y -i "${1}" -i "${PALETTE}" -filter_complex paletteuse -r 10 "${OUT}.gif" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
+	exit 0
+fi
+
+zenity --info --text="Something went wrong."
+exit 1

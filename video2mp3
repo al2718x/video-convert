@@ -1,0 +1,57 @@
+#!/bin/bash
+
+TOTAL=$#
+if [ $TOTAL -lt 1 ]; then
+	zenity --info --text="Something went wrong."
+	exit 1
+fi
+
+TITLE="MP3 extractor"
+
+NEW_BITRATE=$(zenity --entry --title="$TITLE" --text="Bitrate:" --width=300 --entry-text="320")
+if [ "$NEW_BITRATE" == "" ]; then
+	exit 1
+fi
+
+NEW_DIR=$(xdg-user-dir DOWNLOAD)
+if [ $TOTAL -gt 1 ]; then
+	NEW_DIR="$NEW_DIR/$$"
+fi
+
+MASK=$(zenity --entry --title="$TITLE" --text="Output [/path/to/file-name-mask/*.ext]:" --width=300 --entry-text="$NEW_DIR/*.mp3")
+if [ "$MASK" == "" ]; then
+	exit 1
+fi
+
+NEW_PATH=$(dirname "$MASK")
+if [ ! -d "$NEW_PATH" ]; then
+	mkdir "$NEW_PATH"
+	if [ ! -d "$NEW_PATH" ]; then
+		zenity --info --text "Cannot create $NEW_PATH"
+		exit 2
+	fi
+fi
+
+NUM=0
+(while [ $NUM -lt $TOTAL ]; do
+	if [ -f "$1" ]; then
+		F_NAME_EXT=$(basename -- "$1")
+		F_NAME="${F_NAME_EXT%.*}"
+		F_EXT="${F_NAME_EXT##*.}"
+		OUT=$(echo "$MASK" | sed "s/\*/$F_NAME/i")
+		if [ -f "$OUT" ]; then
+			OUT=$(echo "$MASK" | sed "s/\*/$F_NAME~$$/i")
+		fi
+		# zenity --info --text "$OUT"
+		ffmpeg -i "$1" -vn -ar 44100 -ac 2 -b:a "$NEW_BITRATE"k "$OUT"
+	fi
+	let NUM=$NUM+1
+	shift
+done) | zenity --progress --title="$TITLE" --text="Converting..." --pulsate --auto-close --auto-kill
+
+OLD_PATH=$(pwd)
+if [ "$OLD_PATH" != "$NEW_PATH" ]; then
+	xdg-open "$NEW_PATH"
+fi
+
+exit 0
