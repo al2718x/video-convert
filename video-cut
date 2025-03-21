@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -f "$1" ]; then
+    FROM=$(zenity --entry --title="Video cut" --text="From [hh:mm:ss] (0 = from start):" --width=300 --entry-text="0")
+    if [ "$FROM" == "" ]; then
+        exit 1
+    fi
+    TO=$(zenity --entry --title="Video cut" --text="To [hh:mm:ss] (0 = to the end):" --width=300 --entry-text="00:01:00")
+    if [ "$TO" == "" ]; then
+        exit 1
+    fi
+    F_NAME_EXT=$(basename -- "$1")
+    F_NAME="${F_NAME_EXT%.*}"
+    F_EXT="${F_NAME_EXT##*.}"
+    TS=$(date +'%s')
+    OUT="${1%.*}~CUT~$TS.$F_EXT"
+    if [ "$FROM" == "0" ]; then
+        ffmpeg -i "$1" -to "$TO" -c copy "$OUT"
+    else
+        if [ "$TO" == "0" ]; then
+            ffmpeg -i "$1" -ss "$FROM" -c copy "$OUT"
+        else
+            ffmpeg -i "$1" -ss "$FROM" -to "$TO" -c copy "$OUT"
+        fi
+    fi
+    exit 0
+fi
+
+zenity --info --text="Something went wrong."
+exit 1

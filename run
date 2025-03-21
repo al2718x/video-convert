@@ -2,21 +2,24 @@
 
 TOTAL=$#
 if [ $TOTAL -lt 1 ]; then
-	exit 1
+    exit 1
 fi
 
-OPTIONS=$(zenity --width=250 --height=200 --text="" --list --radiolist --hide-header --hide-column=2 --column "" --column "" --column "" TRUE 0 "video to gif" FALSE 1 "extract mp3" FALSE 2 "scale")
+OPTIONS=$(zenity --width=250 --height=250 --text="" --list --radiolist --hide-header --hide-column=2 --column "" --column "" --column "" TRUE 0 "video to gif" FALSE 1 "extract mp3" FALSE 2 "scale" FALSE 3 "cut")
 
 BASEDIR=$(dirname $(realpath "$0"))
 
 if [[ "$OPTIONS" == *"0"* ]]; then
-	"$BASEDIR"/video2gif "$@"
+    "$BASEDIR"/video2gif "$@"
 fi
 if [[ "$OPTIONS" == *"1"* ]]; then
-	"$BASEDIR"/video2mp3 "$@"
+    "$BASEDIR"/video2mp3 "$@"
 fi
 if [[ "$OPTIONS" == *"2"* ]]; then
-	"$BASEDIR"/video-scale "$@"
+    "$BASEDIR"/video-scale "$@"
+fi
+if [[ "$OPTIONS" == *"3"* ]]; then
+    "$BASEDIR"/video-cut "$@"
 fi
 
 exit 0
