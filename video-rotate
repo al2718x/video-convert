@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ -f "$1" ]; then
+    OPTIONS=$(zenity --width=250 --height=250 --text="" --list --radiolist --hide-header --hide-column=2 --column "" --column "" --column "" TRUE 0 "90° CW" FALSE 1 "90° CCW" FALSE 2 "180°" FALSE 3 "flip horizontal" FALSE 4 "flip vertical")
+    if [ "$OPTIONS" == "" ]; then
+        exit 1
+    fi
+    CMD="transpose=1"
+    STR="90CW"
+    if [[ "$OPTIONS" == *"1"* ]]; then
+        CMD="transpose=2"
+        STR="90CCW"
+    fi
+    if [[ "$OPTIONS" == *"2"* ]]; then
+        CMD="transpose=1,transpose=1"
+        STR="180CW"
+    fi
+    if [[ "$OPTIONS" == *"3"* ]]; then
+        CMD="hflip"
+        STR="HFLIP"
+    fi
+    if [[ "$OPTIONS" == *"4"* ]]; then
+        CMD="vflip"
+        STR="VFLIP"
+    fi
+    F_NAME_EXT=$(basename -- "$1")
+    F_NAME="${F_NAME_EXT%.*}"
+    F_EXT="${F_NAME_EXT##*.}"
+    TS=$(date +'%s')
+    OUT="${1%.*}~$STR~$TS.$F_EXT"
+    ffmpeg -y -i "${1}" -vf "${CMD}" "${OUT}" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
+    exit 0
+fi
+
+zenity --info --text="Something went wrong."
+exit 1
