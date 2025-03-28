@@ -8,7 +8,8 @@ if [ -f "$1" ]; then
 	F_NAME_EXT=$(basename -- "$1")
 	F_NAME="${F_NAME_EXT%.*}"
 	F_EXT="${F_NAME_EXT##*.}"
-	ffmpeg -y -i "${1}" -vf "scale=iw/${SCALE}:ih/${SCALE}" -c:a copy "${F_NAME}-${SCALE}.${F_EXT}" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
+	TS=$(date +'%s')
+	ffmpeg -y -i "${1}" -vf "scale=iw/${SCALE}:ih/${SCALE}" -c:a copy "${F_NAME}~SCALE-$SCALE~$TS.${F_EXT}" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
 	exit 0
 fi
 
