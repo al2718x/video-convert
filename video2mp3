@@ -6,11 +6,17 @@ if [ $TOTAL -lt 1 ]; then
     exit 1
 fi
 
-TITLE="MP3 extractor"
+TITLE="Audio extractor"
 
 NEW_BITRATE=$(zenity --entry --title="$TITLE" --text="Bitrate:" --width=300 --entry-text="320")
 if [ "$NEW_BITRATE" == "" ]; then
     exit 1
+fi
+
+if [ $TOTAL -eq 1 ]; then
+    OUT=$(zenity --entry --title="$TITLE" --text="Output:" --width=300 --entry-text="${1%.*}.mp3")
+    ffmpeg -i "$1" -vn -ar 44100 -ac 2 -b:a "$NEW_BITRATE"k "$OUT" | zenity --progress --text="Extracting audio..." --pulsate --auto-close --auto-kill
+    exit 0
 fi
 
 NEW_DIR=$(xdg-user-dir DOWNLOAD)
@@ -47,7 +53,7 @@ NUM=0
     fi
     let NUM=$NUM+1
     shift
-done) | zenity --progress --title="$TITLE" --text="Converting..." --pulsate --auto-close --auto-kill
+done) | zenity --progress --title="$TITLE" --text="Extracting audio..." --pulsate --auto-close --auto-kill
 
 OLD_PATH=$(pwd)
 if [ "$OLD_PATH" != "$NEW_PATH" ]; then
