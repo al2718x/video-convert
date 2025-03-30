@@ -1,16 +1,16 @@
 #!/bin/bash
 
 if [ -f "$1" ]; then
-	SCALE=$(zenity --entry --title="Video downscale" --text="Scale factor:" --width=300 --entry-text="2")
-	if [ "$SCALE" == "" ]; then
-		exit 1
-	fi
-	F_NAME_EXT=$(basename -- "$1")
-	F_NAME="${F_NAME_EXT%.*}"
-	F_EXT="${F_NAME_EXT##*.}"
-	TS=$(date +'%s')
-	ffmpeg -y -i "${1}" -vf "scale=iw/${SCALE}:ih/${SCALE}" -c:a copy "${F_NAME}~SCALE-$SCALE~$TS.${F_EXT}" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
-	exit 0
+    SCALE=$(zenity --entry --title="Video downscale" --text="Scale factor:" --width=300 --entry-text="2")
+    if [ "$SCALE" == "" ]; then
+        exit 1
+    fi
+    F_NAME_EXT=$(basename -- "$1")
+    F_NAME="${F_NAME_EXT%.*}"
+    F_EXT="${F_NAME_EXT##*.}"
+    TS=$(date +'%s')
+    ffmpeg -y -i "${1}" -vf "scale=iw/${SCALE}:ih/${SCALE}" -c:a copy "${F_NAME}~SCALE-$SCALE~$TS.${F_EXT}" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
+    exit 0
 fi
 
 zenity --info --text="Something went wrong."

@@ -5,10 +5,10 @@ Use: \
 `video-rotate` video-file \
 `video-scale` video-file \
 `video2gif` video-file \
-`video2mp3` directory-to-scan
+`video2mp3` video-file {video-file-2 video-file-3 ...}
 
 Or use gui to select tool: \
-`run` file-or-directory
+`run` video-file
 
 Сan be used as script for `nemo` file manager.
 
