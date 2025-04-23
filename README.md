@@ -1,6 +1,7 @@
-Console tools with `zenity` dialogues for cut, rotate/flip, scale video, convert to animated gif or extract audio.
+Console tools with `zenity` dialogues for cut, rotate/flip, scale or crop video, convert to animated gif or extract audio.
 
 Use: \
+`video-crop` video-file \
 `video-cut` video-file \
 `video-rotate` video-file \
 `video-scale` video-file \
