@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ -f "$1" ]; then
+    CROP=$(zenity --entry --title="Video crop" --text="[w:h:x:y]:" --width=300 --entry-text="0:0:0:0")
+    if [ "$CROP" == "" ] || [ "$CROP" == "0:0:0:0" ]; then
+        exit 1
+    fi
+    F_NAME_EXT=$(basename -- "$1")
+    F_NAME="${F_NAME_EXT%.*}"
+    F_EXT="${F_NAME_EXT##*.}"
+    TS=$(date +'%s')
+    OUT="${1%.*}~CROP~$TS.$F_EXT"
+    ffmpeg -i "$1" -vf "crop=$CROP" "$OUT" | zenity --progress --text="Converting Video..." --pulsate --auto-close --auto-kill
+    exit 0
+fi
+
+zenity --info --text="Something went wrong."
+exit 1

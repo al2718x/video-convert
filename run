@@ -5,7 +5,7 @@ if [ $TOTAL -lt 1 ]; then
     exit 1
 fi
 
-OPTIONS=$(zenity --width=250 --height=250 --text="" --list --radiolist --hide-header --hide-column=2 --column "" --column "" --column "" TRUE 0 "video to gif" FALSE 1 "extract audio" FALSE 2 "scale" FALSE 3 "rotate" FALSE 4 "cut")
+OPTIONS=$(zenity --width=250 --height=300 --text="" --list --radiolist --hide-header --hide-column=2 --column "" --column "" --column "" TRUE 0 "video to gif" FALSE 1 "extract audio" FALSE 2 "scale" FALSE 3 "rotate" FALSE 4 "cut" FALSE 5 "crop")
 
 BASEDIR=$(dirname $(realpath "$0"))
 
@@ -23,6 +23,9 @@ if [[ "$OPTIONS" == *"3"* ]]; then
 fi
 if [[ "$OPTIONS" == *"4"* ]]; then
     "$BASEDIR"/video-cut "$@"
+fi
+if [[ "$OPTIONS" == *"5"* ]]; then
+    "$BASEDIR"/video-crop "$@"
 fi
 
 exit 0
